@@ -1,0 +1,20 @@
+{
+  "name": "quotable",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "yarn --cwd ./src/renderer dev",
+    "build": "yarn --cwd ./src/renderer build",
+    "electron": "tsc --p ./src/main/tsconfig.json && electron ./build/main.js"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.0",
+    "@tsconfig/svelte": "^3.0.0",
+    "electron": "^22.1.0",
+    "svelte": "^3.54.0",
+    "svelte-check": "^2.10.0",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0"
+  }
+}
