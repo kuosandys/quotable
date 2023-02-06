@@ -1,14 +1,66 @@
-import { app, BrowserWindow } from 'electron';
+import {
+  app,
+  App,
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+} from 'electron';
+import { Config, Env, NodeEnv } from './types';
 
-const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-  });
+export default class Main {
+  private electronApp: App;
+  private electronBrowserWindow: typeof BrowserWindow;
+  private appEntryFilePath: string;
+  private defaultBrowserOptions: BrowserWindowConstructorOptions;
+  private env: Env;
 
-  win.loadFile('./index.html');
-};
+  constructor(
+    env: Env,
+    config: Config,
+    electronApp: App = app,
+    electronBrowserWindow: typeof BrowserWindow = BrowserWindow
+  ) {
+    this.electronApp = electronApp;
+    this.electronBrowserWindow = electronBrowserWindow;
 
-app.whenReady().then(() => {
-  createWindow();
-});
+    this.env = env;
+    this.appEntryFilePath = config.appEntryFilePath;
+    this.defaultBrowserOptions = config.defaultBrowserOptions;
+  }
+
+  public async init() {
+    await this.electronApp.whenReady();
+    this.createWindow(this.appEntryFilePath);
+    this.registerHandlers();
+  }
+
+  private createWindow(
+    filePath: string,
+    options?: BrowserWindowConstructorOptions
+  ) {
+    const window = new this.electronBrowserWindow(
+      options ?? this.defaultBrowserOptions
+    );
+
+    if (this.env.nodeEnv === NodeEnv.DEVELOPMENT) {
+      window.loadURL(this.env.rendererDevUrl);
+    } else {
+      window.loadFile(filePath);
+    }
+  }
+
+  private registerHandlers() {
+    this.handleAllWindowsClosed;
+  }
+
+  private handleAllWindowsClosed() {
+    this.electronApp.on('window-all-closed', () => {
+      if (process.platform !== 'darwin') this.electronApp.quit();
+    });
+
+    // Mac
+    this.electronApp.on('activate', () => {
+      if (this.electronBrowserWindow.getAllWindows().length === 0)
+        this.createWindow(this.appEntryFilePath);
+    });
+  }
+}
