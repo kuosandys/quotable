@@ -3,10 +3,14 @@ import {
   App,
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  ipcMain,
+  IpcMain,
 } from 'electron';
-import { Config, Env, NodeEnv } from './types';
+import { createMainApiHandlers } from '../ipc';
+import { Config, Env, NodeEnv } from '../types';
 
 export default class Main {
+  private mainProcess: IpcMain;
   private electronApp: App;
   private electronBrowserWindow: typeof BrowserWindow;
   private appEntryFilePath: string;
@@ -16,9 +20,11 @@ export default class Main {
   constructor(
     env: Env,
     config: Config,
+    mainProcess: IpcMain = ipcMain,
     electronApp: App = app,
     electronBrowserWindow: typeof BrowserWindow = BrowserWindow
   ) {
+    this.mainProcess = mainProcess;
     this.electronApp = electronApp;
     this.electronBrowserWindow = electronBrowserWindow;
 
@@ -30,7 +36,8 @@ export default class Main {
   public async init() {
     await this.electronApp.whenReady();
     this.createWindow(this.appEntryFilePath);
-    this.registerHandlers();
+    this.registerAppHandlers();
+    this.registerMainProcessHandlers();
   }
 
   private createWindow(
@@ -48,8 +55,15 @@ export default class Main {
     }
   }
 
-  private registerHandlers() {
+  private registerAppHandlers() {
     this.handleAllWindowsClosed;
+  }
+
+  private registerMainProcessHandlers() {
+    const handlers = createMainApiHandlers();
+    Object.entries(handlers).map(([channel, handler]) =>
+      this.mainProcess.on(channel, handler)
+    );
   }
 
   private handleAllWindowsClosed() {

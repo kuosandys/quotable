@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "build:electron": "yarn run compile && yarn run electron",
+    "build:electron": "tsc -p ./src/main/tsconfig.json && yarn run electron",
     "build:renderer": "yarn --cwd ./src/renderer build",
-    "compile": "tsc --p ./src/main/tsconfig.json",
-    "dev:electron": "nodemon --watch ./src/main -e .ts --exec 'yarn run build:electron'",
+    "build:preload": "tsc -p ./src/preload/tsconfig.json --noEmit && vite build ./src/preload",
+    "dev:electron": "nodemon --watch ./src/main --watch ./src/preload -e .ts --exec 'yarn run build:electron && yarn run build:preload'",
     "dev:renderer": "yarn --cwd ./src/renderer dev",
     "electron": "electron ./build/assets/index.js",
     "start": "concurrently yarn:dev:*"
