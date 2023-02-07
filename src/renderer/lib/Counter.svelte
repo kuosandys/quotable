@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { selectDbFile } from '../utils/electronAPI';
+  import * as electronApi from '../api/electron';
 
   let count: number = 0;
   const increment = () => {
     count += 1;
-    selectDbFile('test');
+    electronApi.selectDbFile('test');
   };
 </script>
 

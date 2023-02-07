@@ -1,4 +1,4 @@
-import { Config } from './types';
+import { Config } from './main/types';
 import * as path from 'path';
 
 export default function createDefaultConfig(): Config {
@@ -7,7 +7,7 @@ export default function createDefaultConfig(): Config {
     defaultBrowserOptions: {
       width: 800,
       height: 600,
-      webPreferences: { preload: path.join(__dirname, 'preload/index.cjs') },
+      webPreferences: { preload: path.join(__dirname, './preload.cjs') },
     },
   };
 }

@@ -6,8 +6,8 @@ import {
   ipcMain,
   IpcMain,
 } from 'electron';
-import { createMainApiHandlers } from '../ipc';
-import { Config, Env, NodeEnv } from '../types';
+import { createMainApiHandlers } from './channelHandlers';
+import { Config, Env, NodeEnv } from './types';
 
 export default class Main {
   private mainProcess: IpcMain;

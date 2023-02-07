@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { Env, NodeEnv } from './types';
+import { Env, NodeEnv } from './main/types';
 
 export default function getEnv(): Env {
   dotenv.config();

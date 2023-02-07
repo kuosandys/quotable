@@ -1,8 +1,8 @@
-import type { ContextBridgeMainApi } from '../preload/types';
-import { CONTEXT_BRIDGE_MAIN_API_KEY } from '../preload/constants';
+import { ELECTRON_API_KEY } from '../common/constants';
+import type { ElectronApi } from '../common/types';
 
 declare global {
   interface Window {
-    [CONTEXT_BRIDGE_MAIN_API_KEY]: ContextBridgeMainApi;
+    [ELECTRON_API_KEY]: ElectronApi;
   }
 }

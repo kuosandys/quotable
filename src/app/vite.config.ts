@@ -8,13 +8,16 @@ export default defineConfig({
 
   build: {
     sourcemap: 'inline',
-    outDir: '../../build/assets/preload',
-
+    outDir: '../../build/app',
     emptyOutDir: true,
+    target: 'node16',
 
     // build in lib mode
     lib: {
-      entry: path.resolve(__dirname, './index.ts'),
+      entry: [
+        path.resolve(__dirname, './index.ts'),
+        path.resolve(__dirname, './preload/preload.ts'),
+      ],
       formats: ['cjs'],
     },
 
