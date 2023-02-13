@@ -1,25 +1,28 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { ELECTRON_API_KEY } from '../../common/constants';
-import { ElectronApi, IElectronApiChannels } from '../../common/types';
+import { ELECTRON_API_KEY } from '../../common';
+import {
+  ElectronApi,
+  ElectronApiSendChannels,
+  ElectronApiSendChannelNames,
+  ElectronApiReceiveChannels,
+  ElectronApiReceiveChannelNames,
+} from '../../common/types';
 
 const api: ElectronApi = {
   // to main
-  send: (channel: IElectronApiChannels, data: unknown) => {
-    const allowedChannels: IElectronApiChannels[] = ['select-db-file'];
-    if (allowedChannels.includes(channel)) {
-      ipcRenderer.send(channel, data);
+  send: (channel: ElectronApiSendChannels) => {
+    const allowedChannels: ElectronApiSendChannelNames[] = ['select-db-file'];
+    if (allowedChannels.includes(channel.name)) {
+      ipcRenderer.send(channel.name, channel.value);
     }
   },
 
   // from main
-  receive: (
-    channel: IElectronApiChannels,
-    handler: (...args: unknown[]) => void
-  ) => {
-    const allowedChannels: IElectronApiChannels[] = [];
-    if (allowedChannels.includes(channel)) {
-      ipcRenderer.on(channel, (_event: IpcRendererEvent, ...args: unknown[]) =>
-        handler(...args)
+  receive: (channel: ElectronApiReceiveChannels) => {
+    const allowedChannels: ElectronApiReceiveChannelNames[] = [];
+    if (allowedChannels.includes(channel.name)) {
+      ipcRenderer.on(channel.name, (_event: IpcRendererEvent, args) =>
+        channel.handler(args)
       );
     }
   },

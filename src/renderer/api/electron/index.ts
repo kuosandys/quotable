@@ -1,3 +1,3 @@
 export function selectDbFile(fileName: string) {
-  window.electronAPI.send('select-db-file', fileName);
+  window.electronAPI.send({ name: 'select-db-file', value: fileName });
 }

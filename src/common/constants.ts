@@ -1,1 +1,1 @@
-export const ELECTRON_API_KEY = 'electronAPI' as const;
+export const ELECTRON_API_KEY = 'electronAPI';
