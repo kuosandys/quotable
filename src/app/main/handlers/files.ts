@@ -1,13 +1,25 @@
-import { ipcMain } from 'electron';
-import { ElectronApiChannelHandler } from './types';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { InvokeChannelHandler } from './types';
 
-export default () => {
-  const sendChannels: ElectronApiChannelHandler[] = [
+async function handleDbFileSelection(browserWindow: BrowserWindow) {
+  const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
+    filters: [{ name: '*', extensions: ['sqlite'] }],
+    properties: ['openFile'],
+  });
+
+  if (canceled) {
+    return;
+  }
+  return filePaths[0];
+}
+
+export default function (browserWindow: BrowserWindow) {
+  const invokeChannels: InvokeChannelHandler[] = [
     {
       name: 'select-db-file',
-      handler: (_event, value) => console.log(value),
+      handler: async (_event, _value) => handleDbFileSelection(browserWindow),
     },
   ];
 
-  sendChannels.forEach(({ name, handler }) => ipcMain.on(name, handler));
-};
+  invokeChannels.forEach(({ name, handler }) => ipcMain.handle(name, handler));
+}

@@ -1,11 +1,16 @@
-import { IpcMainEvent } from 'electron';
-import { ElectronApiSendChannels } from '../../../common';
+import { IpcMainInvokeEvent } from 'electron';
+import * as electronApi from '../../../common/electronApi';
 
-type Distribute<U extends ElectronApiSendChannels> = U extends any
-  ? {
-      name: U['name'];
-      handler: (event: IpcMainEvent, value: U['value']) => void;
-    }
-  : never;
+type DistributeInvoke<U extends electronApi.InvokeChannelsWithReturn> =
+  U extends any
+    ? {
+        name: U['name'];
+        handler: (
+          event: IpcMainInvokeEvent,
+          value: U['value']
+        ) => Promise<U['returnValue']>;
+      }
+    : never;
 
-export type ElectronApiChannelHandler = Distribute<ElectronApiSendChannels>;
+export type InvokeChannelHandler =
+  DistributeInvoke<electronApi.InvokeChannelsWithReturn>;

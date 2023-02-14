@@ -1,29 +1,33 @@
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { ELECTRON_API_KEY } from '../../common';
-import {
-  ElectronApi,
-  ElectronApiSendChannels,
-  ElectronApiSendChannelNames,
-  ElectronApiReceiveChannels,
-  ElectronApiReceiveChannelNames,
-} from '../../common/types';
+import * as electronApi from '../../common/electronApi';
 
-const api: ElectronApi = {
+const api: electronApi.Api = {
   // to main
-  send: (channel: ElectronApiSendChannels) => {
-    const allowedChannels: ElectronApiSendChannelNames[] = ['select-db-file'];
-    if (allowedChannels.includes(channel.name)) {
-      ipcRenderer.send(channel.name, channel.value);
+  send: (channel: electronApi.SendChannels) => {
+    switch (channel.name) {
+      // ipcRenderer.send(channel.name, channel.value);
+      default:
+        return;
     }
   },
 
+  invoke: ((channel: electronApi.InvokeChannels) => {
+    switch (channel.name) {
+      case 'select-db-file':
+        return ipcRenderer.invoke(channel.name, channel.value);
+      default:
+        return;
+    }
+  }) as electronApi.Api['invoke'],
+
   // from main
-  receive: (channel: ElectronApiReceiveChannels) => {
-    const allowedChannels: ElectronApiReceiveChannelNames[] = [];
-    if (allowedChannels.includes(channel.name)) {
-      ipcRenderer.on(channel.name, (_event: IpcRendererEvent, args) =>
-        channel.handler(args)
-      );
+  receive: (channel: electronApi.ReceiveChannels) => {
+    switch (channel.name) {
+      // ipcRenderer.on(channel.name, (_event: IpcRendererEvent, args) =>
+      //   channel.handler(args))
+      default:
+        return;
     }
   },
 };

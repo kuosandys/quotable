@@ -1,5 +1,6 @@
+import { BrowserWindow } from 'electron';
 import registerFileHandlers from './files';
 
-export function registerMainHandlers() {
-  registerFileHandlers();
-}
+export const registerMainHandlers = (browserWindow: BrowserWindow) => {
+  registerFileHandlers(browserWindow);
+};

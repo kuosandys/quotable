@@ -8,45 +8,42 @@ import { Config, Env, NodeEnv } from './types';
 
 export default class Main {
   private electronApp: App;
-  private electronBrowserWindow: typeof BrowserWindow;
   private appEntryFilePath: string;
   private defaultBrowserOptions: BrowserWindowConstructorOptions;
   private env: Env;
+  private currentWindow: BrowserWindow | null = null;
 
-  constructor(
-    env: Env,
-    config: Config,
-    electronApp: App = app,
-    electronBrowserWindow: typeof BrowserWindow = BrowserWindow
-  ) {
+  constructor(env: Env, config: Config, electronApp: App = app) {
     this.electronApp = electronApp;
-    this.electronBrowserWindow = electronBrowserWindow;
-
     this.env = env;
     this.appEntryFilePath = config.appEntryFilePath;
     this.defaultBrowserOptions = config.defaultBrowserOptions;
   }
 
-  public async init(registerMainHandlers: () => void) {
+  public async init(
+    registerMainHandlers: (browserWindow: BrowserWindow) => void
+  ) {
     await this.electronApp.whenReady();
     this.createWindow(this.appEntryFilePath);
     this.registerAppHandlers();
-    registerMainHandlers();
+    if (this.currentWindow) {
+      registerMainHandlers(this.currentWindow);
+    }
   }
 
   private createWindow(
     filePath: string,
     options?: BrowserWindowConstructorOptions
   ) {
-    const window = new this.electronBrowserWindow(
-      options ?? this.defaultBrowserOptions
-    );
+    const window = new BrowserWindow(options ?? this.defaultBrowserOptions);
 
     if (this.env.nodeEnv === NodeEnv.DEVELOPMENT) {
       window.loadURL(this.env.rendererDevUrl);
     } else {
       window.loadFile(filePath);
     }
+
+    this.currentWindow = window;
   }
 
   private registerAppHandlers() {
@@ -60,7 +57,7 @@ export default class Main {
 
     // Mac
     this.electronApp.on('activate', () => {
-      if (this.electronBrowserWindow.getAllWindows().length === 0)
+      if (BrowserWindow.getAllWindows().length === 0)
         this.createWindow(this.appEntryFilePath);
     });
   }
