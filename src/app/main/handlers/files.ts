@@ -16,7 +16,7 @@ async function handleDbFileSelection(browserWindow: BrowserWindow) {
 export default function (browserWindow: BrowserWindow) {
   const invokeChannels: InvokeChannelHandler[] = [
     {
-      name: 'select-db-file',
+      name: 'select-database',
       handler: async (_event, _value) => handleDbFileSelection(browserWindow),
     },
   ];

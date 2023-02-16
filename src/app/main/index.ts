@@ -5,6 +5,7 @@ import {
   BrowserWindowConstructorOptions,
 } from 'electron';
 import { Config, Env, NodeEnv } from './types';
+import DatabaseManager from './utilities/databaseManager';
 
 export default class Main {
   private electronApp: App;
@@ -12,22 +13,32 @@ export default class Main {
   private defaultBrowserOptions: BrowserWindowConstructorOptions;
   private env: Env;
   private currentWindow: BrowserWindow | null = null;
+  private databaseManager: DatabaseManager;
 
-  constructor(env: Env, config: Config, electronApp: App = app) {
+  constructor(
+    env: Env,
+    config: Config,
+    electronApp: App = app,
+    databaseManager = new DatabaseManager()
+  ) {
     this.electronApp = electronApp;
     this.env = env;
     this.appEntryFilePath = config.appEntryFilePath;
     this.defaultBrowserOptions = config.defaultBrowserOptions;
+    this.databaseManager = databaseManager;
   }
 
   public async init(
-    registerMainHandlers: (browserWindow: BrowserWindow) => void
+    registerMainHandlers: (
+      browserWindow: BrowserWindow,
+      databaseManager: DatabaseManager
+    ) => void
   ) {
     await this.electronApp.whenReady();
     this.createWindow(this.appEntryFilePath);
     this.registerAppHandlers();
     if (this.currentWindow) {
-      registerMainHandlers(this.currentWindow);
+      registerMainHandlers(this.currentWindow, this.databaseManager);
     }
   }
 
