@@ -24,6 +24,8 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'electron',
+        'better-sqlite3',
+        'knex',
         ...builtinModules.flatMap((p) => [p, `node:${p}`]),
       ],
 

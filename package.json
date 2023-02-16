@@ -8,14 +8,17 @@
     "dev:electron": "nodemon --watch ./src/app -e .ts --exec 'yarn run build:electron && yarn electron'",
     "dev:renderer": "yarn --cwd ./src/renderer dev",
     "electron": "electron ./build/app/index.cjs",
-    "start": "concurrently yarn:dev:*"
+    "start": "concurrently yarn:dev:*",
+    "postinstall": "./node_modules/.bin/electron-builder install-app-deps"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "@tsconfig/svelte": "^3.0.0",
+    "@types/better-sqlite3": "^7.6.3",
     "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
-    "electron": "^22.1.0",
+    "electron": "23.0.0",
+    "electron-builder": "^23.6.0",
     "nodemon": "^2.0.20",
     "svelte": "^3.54.0",
     "svelte-check": "^2.10.0",
@@ -25,5 +28,9 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^8.1.0",
+    "knex": "^2.4.2"
   }
 }
