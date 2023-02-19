@@ -1,12 +1,11 @@
+import type { Bookmark } from '../../../common/electronApi';
 import type * as electronApi from '../../../common/electronApi';
 
 export async function selectDatabase(): Promise<string | undefined> {
   try {
-    const file =
-      await window.electronAPI.invoke<electronApi.SelectDatabaseChannel>({
-        name: 'select-database',
-      });
-    return file;
+    return window.electronAPI.invoke<electronApi.SelectDatabaseChannel>({
+      name: 'select-database',
+    });
   } catch (e) {
     // TODO: handle
     console.log(e);
@@ -14,14 +13,25 @@ export async function selectDatabase(): Promise<string | undefined> {
   }
 }
 
-export async function loadDatabase(fileName: string): Promise<void> {
+export async function loadDatabase(fileName: string): Promise<boolean> {
   try {
-    const res =
-      await window.electronAPI.invoke<electronApi.ConnectDatabaseChannel>({
-        name: 'connect-database',
-        value: fileName,
-      });
-    return res;
+    await window.electronAPI.invoke<electronApi.ConnectDatabaseChannel>({
+      name: 'connect-database',
+      value: fileName,
+    });
+    return true;
+  } catch (e) {
+    // TODO: handle
+    console.log(e);
+    return false;
+  }
+}
+
+export async function getQuotes(): Promise<Bookmark[] | undefined> {
+  try {
+    return window.electronAPI.invoke<electronApi.GetQuotesChannel>({
+      name: 'get-quotes',
+    });
   } catch (e) {
     // TODO: handle
     console.log(e);

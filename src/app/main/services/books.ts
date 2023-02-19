@@ -1,4 +1,4 @@
-import { Content } from 'knex/types/tables';
+import { Content } from '../../../common/electronApi';
 import DatabaseManager from '../utilities/databaseManager';
 import { CONTENT_TABLE_NAME } from './constants';
 

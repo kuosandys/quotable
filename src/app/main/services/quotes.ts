@@ -1,4 +1,4 @@
-import { Bookmark } from 'knex/types/tables';
+import { Bookmark } from '../../../common/electronApi';
 import DatabaseManager from '../utilities/databaseManager';
 import { BOOKMARK_TABLE_NAME } from './constants';
 

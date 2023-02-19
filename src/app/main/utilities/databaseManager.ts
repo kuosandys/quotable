@@ -1,4 +1,5 @@
 import knex, { Knex } from 'knex';
+import { Tables } from 'knex/types/tables';
 
 const TEST_QUERY = 'SELECT CURRENT_TIMESTAMP;';
 
@@ -24,7 +25,7 @@ export default class DatabaseManager {
   }
 
   public async open(filename: string) {
-    this.database = knex({
+    this.database = knex<Tables>({
       ...this.config,
       connection: { ...this.config.connection, filename },
     });
@@ -59,7 +60,9 @@ export default class DatabaseManager {
       return this.handleNoDatabaseConnection();
     }
 
-    return this.database.select(...columns).from<T>(tableName);
+    const query = this.database<T>(tableName);
+
+    return query.select(...(columns as string[]));
   }
 
   public async close(): Promise<void> {

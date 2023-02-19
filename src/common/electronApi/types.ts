@@ -1,3 +1,18 @@
+export interface Bookmark {
+  BookmarkID: string;
+  Text: string;
+  Annotation: string;
+  Type: 'highlight' | 'note';
+  DateModified: string;
+  DateCreated: string;
+  VolumeID: string;
+}
+
+export interface Content {
+  BookID: string;
+  BookTitle: string;
+}
+
 export type SelectDatabaseChannel = {
   name: 'select-database';
   value?: undefined;
@@ -10,11 +25,18 @@ export type ConnectDatabaseChannel = {
   returnValue: void;
 };
 
+export type GetQuotesChannel = {
+  name: 'get-quotes';
+  value?: undefined;
+  returnValue: Bookmark[];
+};
+
 export type SendChannels = { name: string; value: string };
 
 export type InvokeChannelsWithReturn =
   | SelectDatabaseChannel
-  | ConnectDatabaseChannel;
+  | ConnectDatabaseChannel
+  | GetQuotesChannel;
 
 export type InvokeChannels = Omit<InvokeChannelsWithReturn, 'returnValue'>;
 
