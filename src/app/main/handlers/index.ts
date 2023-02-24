@@ -1,12 +1,13 @@
 import { BrowserWindow } from 'electron';
-import DatabaseManager from '../utilities/databaseManager';
-import registerFileHandlers from './files';
+import { KoboDatabase } from '../models/KoboDatabase';
+import DatabaseManager from '../utilities/databaseClient';
 import registerDatabaseHandlers from './db';
+import registerFileHandlers from './files';
 
 export const registerMainHandlers = (
   browserWindow: BrowserWindow,
-  databaseManager: DatabaseManager
+  koboDatabaseManager: DatabaseManager<KoboDatabase>
 ) => {
+  registerDatabaseHandlers(koboDatabaseManager);
   registerFileHandlers(browserWindow);
-  registerDatabaseHandlers(databaseManager);
 };

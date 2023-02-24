@@ -9,9 +9,7 @@
   <ul>
     {#each quotes as quote}
       <li class="quote-container">
-        {#if quote.Type === 'highlight'}
-          <p>"{quote.Text.trim()}"</p>
-        {/if}
+          <p>"{quote.text.trim()}"</p>
       </li>
     {/each}
   </ul>

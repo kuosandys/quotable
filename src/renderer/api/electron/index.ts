@@ -1,4 +1,3 @@
-import type { Bookmark } from '../../../common/electronApi';
 import type * as electronApi from '../../../common/electronApi';
 
 export async function selectDatabase(): Promise<string | undefined> {
@@ -27,7 +26,7 @@ export async function loadDatabase(fileName: string): Promise<boolean> {
   }
 }
 
-export async function getQuotes(): Promise<Bookmark[] | undefined> {
+export async function getQuotes(): Promise<electronApi.Quote[] | undefined> {
   try {
     return window.electronAPI.invoke<electronApi.GetQuotesChannel>({
       name: 'get-quotes',

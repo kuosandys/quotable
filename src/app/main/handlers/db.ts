@@ -1,29 +1,34 @@
 import { ipcMain } from 'electron';
-import { Bookmark } from '../../../common/electronApi';
-import DatabaseManager from '../utilities/databaseManager';
+import { Quote } from '../../../common/electronApi';
+import { KoboDatabase } from '../models/KoboDatabase';
+import * as quotesService from '../services/quotes';
+import DatabaseClient from '../utilities/databaseClient';
 import { InvokeChannelHandler } from './types';
 
-export default function (databaseManager: DatabaseManager) {
+async function handleConnectToDatabase(
+  koboDBClient: DatabaseClient<KoboDatabase>,
+  filename: string
+): Promise<void> {
+  await koboDBClient.open(filename);
+  return koboDBClient.test();
+}
+
+async function handleGetQuotes(
+  koboDBClient: DatabaseClient<KoboDatabase>
+): Promise<Quote[]> {
+  return quotesService.getQuotes(koboDBClient);
+}
+
+export default function (koboDBClient: DatabaseClient<KoboDatabase>) {
   const invokeChannels: InvokeChannelHandler[] = [
     {
       name: 'connect-database',
-      handler: async (_event, value: string) => {
-        return databaseManager.open(value);
-      },
+      handler: async (_event, value: string) =>
+        handleConnectToDatabase(koboDBClient, value),
     },
     {
       name: 'get-quotes',
-      handler: async (_event) => {
-        return databaseManager.getSelect<Bookmark>('Bookmark', [
-          'BookmarkID',
-          'Text',
-          'Annotation',
-          'Type',
-          'DateModified',
-          'DateCreated',
-          'VolumeID',
-        ]) as Promise<Bookmark[]>;
-      },
+      handler: async () => handleGetQuotes(koboDBClient),
     },
   ];
 

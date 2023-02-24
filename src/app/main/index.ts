@@ -4,8 +4,9 @@ import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
 } from 'electron';
+import { KoboDatabase } from './models/KoboDatabase';
 import { Config, Env, NodeEnv } from './types';
-import DatabaseManager from './utilities/databaseManager';
+import DatabaseClient from './utilities/databaseClient';
 
 export default class Main {
   private electronApp: App;
@@ -13,32 +14,32 @@ export default class Main {
   private defaultBrowserOptions: BrowserWindowConstructorOptions;
   private env: Env;
   private currentWindow: BrowserWindow | null = null;
-  private databaseManager: DatabaseManager;
+  private koboDatabaseClient: DatabaseClient<KoboDatabase>;
 
   constructor(
     env: Env,
     config: Config,
     electronApp: App = app,
-    databaseManager = new DatabaseManager()
+    DBClient = DatabaseClient
   ) {
     this.electronApp = electronApp;
     this.env = env;
     this.appEntryFilePath = config.appEntryFilePath;
     this.defaultBrowserOptions = config.defaultBrowserOptions;
-    this.databaseManager = databaseManager;
+    this.koboDatabaseClient = new DBClient<KoboDatabase>();
   }
 
   public async init(
     registerMainHandlers: (
       browserWindow: BrowserWindow,
-      databaseManager: DatabaseManager
+      databaseManager: DatabaseClient<KoboDatabase>
     ) => void
   ) {
     await this.electronApp.whenReady();
     this.createWindow(this.appEntryFilePath);
     this.registerAppHandlers();
     if (this.currentWindow) {
-      registerMainHandlers(this.currentWindow, this.databaseManager);
+      registerMainHandlers(this.currentWindow, this.koboDatabaseClient);
     }
   }
 

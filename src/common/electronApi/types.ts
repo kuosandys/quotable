@@ -1,16 +1,13 @@
-export interface Bookmark {
-  BookmarkID: string;
-  Text: string;
-  Annotation: string;
-  Type: 'highlight' | 'note';
-  DateModified: string;
-  DateCreated: string;
-  VolumeID: string;
+export interface Quote {
+  id: string;
+  text: string;
+  annotation?: string;
+  bookTitle: string;
 }
 
-export interface Content {
-  BookID: string;
-  BookTitle: string;
+export interface Book {
+  id: string;
+  title: string;
 }
 
 export type SelectDatabaseChannel = {
@@ -28,7 +25,7 @@ export type ConnectDatabaseChannel = {
 export type GetQuotesChannel = {
   name: 'get-quotes';
   value?: undefined;
-  returnValue: Bookmark[];
+  returnValue: Quote[];
 };
 
 export type SendChannels = { name: string; value: string };
