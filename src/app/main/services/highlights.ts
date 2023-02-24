@@ -1,4 +1,4 @@
-import { Quote } from '../../../common/electronApi';
+import { Highlight } from '../../../common/electronApi';
 import {
   BOOKMARK_TABLE,
   BOOKMARK_TABLE_NAME,
@@ -8,8 +8,10 @@ import { CONTENT_TABLE, CONTENT_TABLE_NAME } from '../models/Content';
 import { KoboDatabase } from '../models/KoboDatabase';
 import DatabaseClient from '../utilities/databaseClient';
 
-export async function getQuotes(koboDBClient: DatabaseClient<KoboDatabase>) {
-  return koboDBClient.execute<Quote[]>((db) => {
+export async function getHighlights(
+  koboDBClient: DatabaseClient<KoboDatabase>
+) {
+  return koboDBClient.execute<Highlight[]>((db) => {
     return db
       .distinct(`${BOOKMARK_TABLE_NAME}.${BOOKMARK_TABLE.BOOKMARK_ID}`)
       .select([

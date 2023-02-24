@@ -60,12 +60,7 @@ export default class DatabaseClient<T extends {}> {
       return this.handleNoDatabaseConnection();
     }
 
-    const ok = await this._database.raw(TEST_QUERY);
-    if (!ok) {
-      return Promise.reject('Database connection failed');
-    }
-
-    return;
+    return this._database.raw(TEST_QUERY);
   }
 
   private handleNoDatabaseConnection() {

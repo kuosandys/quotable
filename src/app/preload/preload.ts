@@ -16,7 +16,7 @@ const api: electronApi.Api = {
     switch (channel.name) {
       case 'select-database':
       case 'connect-database':
-      case 'get-quotes':
+      case 'get-highlights':
         return ipcRenderer.invoke(channel.name, channel.value);
       default:
         return;

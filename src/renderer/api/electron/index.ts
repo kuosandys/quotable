@@ -22,18 +22,22 @@ export async function loadDatabase(fileName: string): Promise<boolean> {
   } catch (e) {
     // TODO: handle
     console.log(e);
-    return false;
+    return Promise.reject('Could not connect to database.');
   }
 }
 
-export async function getQuotes(): Promise<electronApi.Quote[] | undefined> {
+export async function getHighlights(): Promise<
+  electronApi.Highlight[] | undefined
+> {
   try {
-    return window.electronAPI.invoke<electronApi.GetQuotesChannel>({
-      name: 'get-quotes',
-    });
+    const highlights =
+      await window.electronAPI.invoke<electronApi.GetHighlightsChannel>({
+        name: 'get-highlights',
+      });
+    return highlights;
   } catch (e) {
     // TODO: handle
     console.log(e);
-    return undefined;
+    return Promise.reject('Could not load highlights.');
   }
 }

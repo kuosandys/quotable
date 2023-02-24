@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
-import { Quote } from '../../../common/electronApi';
+import { Highlight } from '../../../common/electronApi';
 import { KoboDatabase } from '../models/KoboDatabase';
-import * as quotesService from '../services/quotes';
+import * as highlightsService from '../services/highlights';
 import DatabaseClient from '../utilities/databaseClient';
 import { InvokeChannelHandler } from './types';
 
@@ -13,10 +13,10 @@ async function handleConnectToDatabase(
   return koboDBClient.test();
 }
 
-async function handleGetQuotes(
+async function handleGetHighlights(
   koboDBClient: DatabaseClient<KoboDatabase>
-): Promise<Quote[]> {
-  return quotesService.getQuotes(koboDBClient);
+): Promise<Highlight[]> {
+  return highlightsService.getHighlights(koboDBClient);
 }
 
 export default function (koboDBClient: DatabaseClient<KoboDatabase>) {
@@ -27,8 +27,8 @@ export default function (koboDBClient: DatabaseClient<KoboDatabase>) {
         handleConnectToDatabase(koboDBClient, value),
     },
     {
-      name: 'get-quotes',
-      handler: async () => handleGetQuotes(koboDBClient),
+      name: 'get-highlights',
+      handler: async () => handleGetHighlights(koboDBClient),
     },
   ];
 

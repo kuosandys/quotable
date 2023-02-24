@@ -1,4 +1,4 @@
-export interface Quote {
+export interface Highlight {
   id: string;
   text: string;
   annotation?: string;
@@ -22,10 +22,10 @@ export type ConnectDatabaseChannel = {
   returnValue: void;
 };
 
-export type GetQuotesChannel = {
-  name: 'get-quotes';
+export type GetHighlightsChannel = {
+  name: 'get-highlights';
   value?: undefined;
-  returnValue: Quote[];
+  returnValue: Highlight[];
 };
 
 export type SendChannels = { name: string; value: string };
@@ -33,7 +33,7 @@ export type SendChannels = { name: string; value: string };
 export type InvokeChannelsWithReturn =
   | SelectDatabaseChannel
   | ConnectDatabaseChannel
-  | GetQuotesChannel;
+  | GetHighlightsChannel;
 
 export type InvokeChannels = Omit<InvokeChannelsWithReturn, 'returnValue'>;
 

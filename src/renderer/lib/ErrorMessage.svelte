@@ -2,4 +2,4 @@
   export let error: unknown;
 </script>
 
-<p>something went wrong: {error.toString()}</p>
+<p>Something went wrong: {error.toString()}</p>

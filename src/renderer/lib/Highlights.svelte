@@ -3,11 +3,11 @@
   import ErrorMessage from './ErrorMessage.svelte';
 </script>
 
-{#await electronApi.getQuotes()}
-  <p>loading quotes</p>
-{:then quotes}
+{#await electronApi.getHighlights()}
+  <p>loading highlights</p>
+{:then highlights}
   <ul>
-    {#each quotes as quote}
+    {#each highlights as quote}
       <li class="quote-container">
           <p>"{quote.text.trim()}"</p>
       </li>
