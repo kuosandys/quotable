@@ -6,8 +6,8 @@ const testData: Highlight[] = [
     id: 0,
     text: 'some highlight',
     annotation: 'annotation about the highlight',
-    date_created: new Date(),
-    book_id: 0,
+    dateCreated: new Date(),
+    bookId: 0,
   },
 ];
 

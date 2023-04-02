@@ -6,11 +6,11 @@ import {
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable(HIGHLIGHT_TABLE_NAME, (table) => {
-    table.increments(HIGHLIGHT_TABLE.ID);
+    table.integer(HIGHLIGHT_TABLE.ID);
     table.string(HIGHLIGHT_TABLE.TEXT);
     table.string(HIGHLIGHT_TABLE.ANNOTATION);
-    table.date(HIGHLIGHT_TABLE.DATE_CREATED);
-    table.integer(HIGHLIGHT_TABLE.BOOK_ID);
+    table.date(HIGHLIGHT_TABLE.DATECREATED);
+    table.integer(HIGHLIGHT_TABLE.BOOKID);
   });
 }
 

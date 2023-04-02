@@ -2,8 +2,8 @@ export interface Highlight {
   id: number;
   text: string;
   annotation: string;
-  date_created: Date;
-  book_id: number;
+  dateCreated: Date;
+  bookId: number;
 }
 
 export const HIGHLIGHT_TABLE_NAME = 'highlight';
@@ -15,6 +15,6 @@ export const HIGHLIGHT_TABLE: Record<
   ID: 'id',
   TEXT: 'text',
   ANNOTATION: 'annotation',
-  DATE_CREATED: 'date_created',
-  BOOK_ID: 'book_id',
+  DATECREATED: 'dateCreated',
+  BOOKID: 'bookId',
 };

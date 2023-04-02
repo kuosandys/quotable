@@ -1,30 +1,45 @@
-import { Highlight } from '../../../common/electronApi';
 import {
-  BOOKMARK_TABLE,
-  BOOKMARK_TABLE_NAME,
-  Bookmark,
-} from '../models/koboDB/Bookmark';
-import { CONTENT_TABLE, CONTENT_TABLE_NAME } from '../models/koboDB/Content';
-import { KoboDatabase } from '../models/koboDB/KoboDatabase';
+  Highlight,
+  HIGHLIGHT_TABLE,
+  HIGHLIGHT_TABLE_NAME,
+} from '../models/Highlight';
+import { Bookmark } from '../models/koboDB/Bookmark';
+import { QuotableDatabase } from '../models/QuotableDatabase';
+import { DB_INSERT_CHUNKSIZE } from '../utilities/constants';
 import DatabaseClient from '../utilities/databaseClient';
 
+function mapBookmarkToHighlight(bookmark: Bookmark): Highlight {
+  return {
+    id: parseInt(bookmark.BookmarkID),
+    text: bookmark.Text,
+    annotation: bookmark.Annotation,
+    dateCreated: new Date(bookmark.DateCreated), // TODO check format
+    bookId: parseInt(bookmark.VolumeID),
+  };
+}
+
 export async function getHighlights(
-  koboDBClient: DatabaseClient<KoboDatabase>
-) {
-  return koboDBClient.execute<Highlight[]>((db) => {
+  quotableDBClient: DatabaseClient<QuotableDatabase>
+): Promise<Highlight[]> {
+  return quotableDBClient.execute<Highlight[]>((db) => {
     return db
-      .distinct(`${BOOKMARK_TABLE_NAME}.${BOOKMARK_TABLE.BOOKMARKID}`)
-      .select([
-        `${BOOKMARK_TABLE_NAME}.${BOOKMARK_TABLE.BOOKMARKID} as id`,
-        `${BOOKMARK_TABLE_NAME}.${BOOKMARK_TABLE.TEXT} as text`,
-        `${BOOKMARK_TABLE_NAME}.${BOOKMARK_TABLE.ANNOTATION} as annotation`,
-        `${CONTENT_TABLE_NAME}.${CONTENT_TABLE.BOOKTITLE} as bookTitle`,
-      ])
-      .from<Bookmark>(BOOKMARK_TABLE_NAME)
-      .leftJoin(
-        CONTENT_TABLE_NAME,
-        `${BOOKMARK_TABLE_NAME}.${BOOKMARK_TABLE.VOLUMEID}`,
-        `${CONTENT_TABLE_NAME}.${CONTENT_TABLE.BOOKID}`
-      );
+      .distinct(HIGHLIGHT_TABLE.ID)
+      .select('*')
+      .from(HIGHLIGHT_TABLE_NAME);
   });
+}
+
+export async function insertHighlights(
+  quotableDBClient: DatabaseClient<QuotableDatabase>,
+  bookmarks: Bookmark[]
+): Promise<number> {
+  const result = await quotableDBClient.execute<typeof HIGHLIGHT_TABLE.ID[]>(
+    (db) => {
+      const highlights = bookmarks.map(mapBookmarkToHighlight);
+      return db
+        .batchInsert(HIGHLIGHT_TABLE_NAME, highlights, DB_INSERT_CHUNKSIZE)
+        .returning(HIGHLIGHT_TABLE.ID);
+    }
+  );
+  return result.length;
 }

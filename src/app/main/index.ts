@@ -8,6 +8,7 @@ import { KoboDatabase } from './models/koboDB/KoboDatabase';
 import { Config, Env, NodeEnv } from './types';
 import DatabaseClient from './utilities/databaseClient';
 import dbConfig from '../db/knexfile';
+import { QuotableDatabase } from './models/QuotableDatabase';
 
 export default class Main {
   private electronApp: App;
@@ -16,6 +17,7 @@ export default class Main {
   private env: Env;
   private currentWindow: BrowserWindow | null = null;
   private koboDatabaseClient: DatabaseClient<KoboDatabase>;
+  private quotableDatabaseClient: DatabaseClient<QuotableDatabase>;
 
   constructor(
     env: Env,
@@ -28,19 +30,36 @@ export default class Main {
     this.appEntryFilePath = config.appEntryFilePath;
     this.defaultBrowserOptions = config.defaultBrowserOptions;
     this.koboDatabaseClient = new DBClient<KoboDatabase>(dbConfig[env.nodeEnv]);
+    this.quotableDatabaseClient = new DBClient<QuotableDatabase>(
+      dbConfig[env.nodeEnv]
+    );
   }
 
   public async init(
     registerMainHandlers: (
       browserWindow: BrowserWindow,
-      databaseManager: DatabaseClient<KoboDatabase>
+      koboDatabaseManager: DatabaseClient<KoboDatabase>,
+      quotableDatabaseManager: DatabaseClient<QuotableDatabase>
+    ) => void,
+    ensureQuotableDB: (
+      quotableDatabaseManager: DatabaseClient<QuotableDatabase>
     ) => void
   ) {
-    await this.electronApp.whenReady();
-    this.createWindow(this.appEntryFilePath);
-    this.registerAppHandlers();
-    if (this.currentWindow) {
-      registerMainHandlers(this.currentWindow, this.koboDatabaseClient);
+    try {
+      await this.electronApp.whenReady();
+      this.createWindow(this.appEntryFilePath);
+      this.registerAppHandlers();
+      if (this.currentWindow) {
+        registerMainHandlers(
+          this.currentWindow,
+          this.koboDatabaseClient,
+          this.quotableDatabaseClient
+        );
+        await ensureQuotableDB(this.quotableDatabaseClient);
+      }
+    } catch (e) {
+      // TODO: handle
+      console.error(e);
     }
   }
 

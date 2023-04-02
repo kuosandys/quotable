@@ -1,25 +1,27 @@
 export interface Highlight {
-  id: string;
+  id: number;
   text: string;
   annotation?: string;
-  bookTitle: string;
+  dateCreated: Date;
+  bookId: number;
 }
 
 export interface Book {
-  id: string;
+  id: number;
   title: string;
+  author: string;
 }
 
-export type SelectDatabaseChannel = {
-  name: 'select-database';
+export type SelectImportDBChannel = {
+  name: 'select-import-db';
   value?: undefined;
   returnValue: string | undefined;
 };
 
-export type ConnectDatabaseChannel = {
-  name: 'connect-database';
+export type ImportFromDBChannel = {
+  name: 'import-from-db';
   value: string;
-  returnValue: void;
+  returnValue: number;
 };
 
 export type GetHighlightsChannel = {
@@ -31,8 +33,8 @@ export type GetHighlightsChannel = {
 export type SendChannels = { name: string; value: string };
 
 export type InvokeChannelsWithReturn =
-  | SelectDatabaseChannel
-  | ConnectDatabaseChannel
+  | SelectImportDBChannel
+  | ImportFromDBChannel
   | GetHighlightsChannel;
 
 export type InvokeChannels = Omit<InvokeChannelsWithReturn, 'returnValue'>;

@@ -1,34 +1,44 @@
 import { ipcMain } from 'electron';
 import { Highlight } from '../../../common/electronApi';
-import { KoboDatabase } from '../models/KoboDatabase';
+import { KoboDatabase } from '../models/koboDB/KoboDatabase';
+import { QuotableDatabase } from '../models/QuotableDatabase';
 import * as highlightsService from '../services/highlights';
+import * as koboImportService from '../services/koboImport';
 import DatabaseClient from '../utilities/databaseClient';
 import { InvokeChannelHandler } from './types';
 
-async function handleConnectToDatabase(
+async function handleImportFromKoboDB(
   koboDBClient: DatabaseClient<KoboDatabase>,
+  quotableDBClient: DatabaseClient<QuotableDatabase>,
   filename: string
-): Promise<void> {
+): Promise<number> {
   await koboDBClient.open(filename);
-  return koboDBClient.test();
+  await koboDBClient.test();
+  const [highlightsData, _booksData] = await koboImportService.importFromKoboDB(
+    koboDBClient
+  );
+  return highlightsService.insertHighlights(quotableDBClient, highlightsData);
 }
 
 async function handleGetHighlights(
-  koboDBClient: DatabaseClient<KoboDatabase>
+  quotableDBClient: DatabaseClient<QuotableDatabase>
 ): Promise<Highlight[]> {
-  return highlightsService.getHighlights(koboDBClient);
+  return highlightsService.getHighlights(quotableDBClient);
 }
 
-export default function (koboDBClient: DatabaseClient<KoboDatabase>) {
+export default function (
+  koboDBClient: DatabaseClient<KoboDatabase>,
+  quotableDBClient: DatabaseClient<QuotableDatabase>
+) {
   const invokeChannels: InvokeChannelHandler[] = [
     {
-      name: 'connect-database',
+      name: 'import-from-db',
       handler: async (_event, value: string) =>
-        handleConnectToDatabase(koboDBClient, value),
+        handleImportFromKoboDB(koboDBClient, quotableDBClient, value),
     },
     {
       name: 'get-highlights',
-      handler: async () => handleGetHighlights(koboDBClient),
+      handler: async () => handleGetHighlights(quotableDBClient),
     },
   ];
 

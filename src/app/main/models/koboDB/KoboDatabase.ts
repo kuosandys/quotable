@@ -1,7 +1,7 @@
-import { Bookmark } from './Bookmark';
-import { Content } from './Content';
+import { Bookmark, BOOKMARK_TABLE_NAME } from './Bookmark';
+import { Content, CONTENT_TABLE_NAME } from './Content';
 
 export interface KoboDatabase {
-  Bookmark: Bookmark;
-  content: Content;
+  [BOOKMARK_TABLE_NAME]: Bookmark;
+  [CONTENT_TABLE_NAME]: Content;
 }

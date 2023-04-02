@@ -1,9 +1,9 @@
 import type * as electronApi from '../../../common/electronApi';
 
-export async function selectDatabase(): Promise<string | undefined> {
+export async function selectDB(): Promise<string | undefined> {
   try {
-    return window.electronAPI.invoke<electronApi.SelectDatabaseChannel>({
-      name: 'select-database',
+    return window.electronAPI.invoke<electronApi.SelectImportDBChannel>({
+      name: 'select-import-db',
     });
   } catch (e) {
     // TODO: handle
@@ -12,13 +12,12 @@ export async function selectDatabase(): Promise<string | undefined> {
   }
 }
 
-export async function loadDatabase(fileName: string): Promise<boolean> {
+export async function importFromDB(fileName: string): Promise<number> {
   try {
-    await window.electronAPI.invoke<electronApi.ConnectDatabaseChannel>({
-      name: 'connect-database',
+    return window.electronAPI.invoke<electronApi.ImportFromDBChannel>({
+      name: 'import-from-db',
       value: fileName,
     });
-    return true;
   } catch (e) {
     // TODO: handle
     console.log(e);
