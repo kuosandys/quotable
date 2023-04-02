@@ -5,11 +5,13 @@
   "scripts": {
     "build:electron": "tsc -p ./src/app/tsconfig.json --noEmit && vite build ./src/app",
     "build:renderer": "yarn --cwd ./src/renderer build",
+    "db:migrate": "knex migrate:latest --knexfile src/app/db/knexfile.ts",
+    "db:seed": "knex seed:run --knexfile src/app/db/knexfile.ts",
     "dev:electron": "nodemon --watch ./src/app -e .ts --exec 'yarn run build:electron && yarn electron'",
     "dev:renderer": "yarn --cwd ./src/renderer dev",
     "electron": "electron ./build/app/index.cjs",
     "start": "concurrently yarn:dev:*",
-    "postinstall": "./node_modules/.bin/electron-builder install-app-deps"
+    "postinstall": "./node_modules/.bin/electron-builder install-app-deps && ./node_modules/.bin/electron-rebuild"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
@@ -19,9 +21,11 @@
     "dotenv": "^16.0.3",
     "electron": "23.0.0",
     "electron-builder": "^23.6.0",
+    "electron-rebuild": "^3.2.9",
     "nodemon": "^2.0.20",
     "svelte": "^3.54.0",
     "svelte-check": "^2.10.0",
+    "ts-node": "^10.9.1",
     "tslib": "^2.4.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
@@ -32,5 +36,8 @@
   "dependencies": {
     "better-sqlite3": "^8.1.0",
     "knex": "^2.4.2"
+  },
+  "build": {
+    "nodeGypRebuild": true
   }
 }

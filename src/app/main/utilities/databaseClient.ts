@@ -1,19 +1,7 @@
 import knex, { Knex } from 'knex';
+import { KnexBetterSqlite3Config } from '../../db/knexfile';
 
 const TEST_QUERY = 'SELECT CURRENT_TIMESTAMP;';
-
-interface KnexBetterSqlite3Config extends Knex.Config {
-  client: 'better-sqlite3';
-  connection: Knex.Sqlite3ConnectionConfig;
-}
-
-const defaultBetterSqlite3DbConfig: KnexBetterSqlite3Config = {
-  client: 'better-sqlite3',
-  connection: {
-    filename: ':memory:',
-  },
-  useNullAsDefault: true,
-};
 
 export type DatabaseClientQuery<U> = (db: Knex) => Promise<U>;
 
@@ -22,7 +10,7 @@ export default class DatabaseClient<T extends {}> {
   private _filename: string | undefined;
   private _database: Knex<T> | undefined;
 
-  constructor(config: KnexBetterSqlite3Config = defaultBetterSqlite3DbConfig) {
+  constructor(config: KnexBetterSqlite3Config) {
     this.config = config;
   }
 

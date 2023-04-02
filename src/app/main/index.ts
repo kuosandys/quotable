@@ -4,9 +4,10 @@ import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
 } from 'electron';
-import { KoboDatabase } from './models/KoboDatabase';
+import { KoboDatabase } from './models/koboDB/KoboDatabase';
 import { Config, Env, NodeEnv } from './types';
 import DatabaseClient from './utilities/databaseClient';
+import dbConfig from '../db/knexfile';
 
 export default class Main {
   private electronApp: App;
@@ -26,7 +27,7 @@ export default class Main {
     this.env = env;
     this.appEntryFilePath = config.appEntryFilePath;
     this.defaultBrowserOptions = config.defaultBrowserOptions;
-    this.koboDatabaseClient = new DBClient<KoboDatabase>();
+    this.koboDatabaseClient = new DBClient<KoboDatabase>(dbConfig[env.nodeEnv]);
   }
 
   public async init(

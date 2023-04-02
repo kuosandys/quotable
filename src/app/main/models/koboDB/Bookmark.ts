@@ -10,12 +10,15 @@ export interface Bookmark {
 
 export const BOOKMARK_TABLE_NAME = 'Bookmark';
 
-export const BOOKMARK_TABLE: Record<string, keyof Bookmark> = {
-  BOOKMARK_ID: 'BookmarkID',
+export const BOOKMARK_TABLE: Record<
+  Uppercase<keyof Bookmark>,
+  keyof Bookmark
+> = {
+  BOOKMARKID: 'BookmarkID',
   TEXT: 'Text',
   ANNOTATION: 'Annotation',
   TYPE: 'Type',
-  DATE_MODIFIED: 'DateModified',
-  DATE_CREATED: 'DateCreated',
-  VOLUME_ID: 'VolumeID',
+  DATEMODIFIED: 'DateModified',
+  DATECREATED: 'DateCreated',
+  VOLUMEID: 'VolumeID',
 };

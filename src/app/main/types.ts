@@ -11,6 +11,6 @@ export enum NodeEnv {
 }
 
 export interface Env {
-  nodeEnv: NodeEnv | string;
+  nodeEnv: NodeEnv;
   rendererDevUrl: string;
 }
