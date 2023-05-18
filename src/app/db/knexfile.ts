@@ -11,7 +11,7 @@ const defaultBetterSqlite3DbConfig: Record<NodeEnv, KnexBetterSqlite3Config> = {
   [NodeEnv.DEVELOPMENT]: {
     client: 'better-sqlite3',
     connection: {
-      filename: path.join(__dirname, '../testDB.sqlite3'),
+      filename: path.join(__dirname, '../db.sqlite3'),
     },
     migrations: {
       tableName: 'knex_migrations',

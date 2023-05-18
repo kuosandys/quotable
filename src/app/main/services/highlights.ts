@@ -36,9 +36,14 @@ export async function insertHighlights(
   const result = await quotableDBClient.execute<typeof HIGHLIGHT_TABLE.ID[]>(
     (db) => {
       const highlights = bookmarks.map(mapBookmarkToHighlight);
-      return db
-        .batchInsert(HIGHLIGHT_TABLE_NAME, highlights, DB_INSERT_CHUNKSIZE)
-        .returning(HIGHLIGHT_TABLE.ID);
+      return db.transaction((trx) =>
+        trx
+          .insert(highlights)
+          .into(HIGHLIGHT_TABLE_NAME)
+          .onConflict(HIGHLIGHT_TABLE.ID)
+          .merge()
+          .returning(HIGHLIGHT_TABLE.ID)
+      );
     }
   );
   return result.length;
