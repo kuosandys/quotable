@@ -19,7 +19,7 @@
     "@types/better-sqlite3": "^7.6.3",
     "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
-    "electron": "23.0.0",
+    "electron": "23.2.3",
     "electron-builder": "^23.6.0",
     "electron-rebuild": "^3.2.9",
     "nodemon": "^2.0.20",
